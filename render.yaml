@@ -1,0 +1,27 @@
+# Render Blueprint：一键部署后端 API（免费 plan）
+# 在 Render 控制台选择 New > Blueprint，指向本仓库即可按此文件自动创建服务。
+services:
+  - type: web
+    name: yuanxiaozhu-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.0
+      # 自动生成随机密钥，避免使用开发默认值
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATA_ENCRYPTION_KEY
+        generateValue: true
+      # 以下两项需在 Render 控制台手动填写（前端部署后回填）
+      - key: CORS_ORIGINS
+        sync: false
+      - key: PUBLIC_BASE_URL
+        sync: false
+      # 可选：配置后启用大模型回答
+      - key: DEEPSEEK_API_KEY
+        sync: false
